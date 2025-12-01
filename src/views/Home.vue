@@ -168,7 +168,7 @@
         loading="lazy"
       />
       <a
-        href="https://uat-recruit.yomaconnect.com/"
+        href="http://uat.yomarecruit.com/"
         target="_blank"
         class="flex cursor-pointer items-baseline justify-center gap-2 font-medium text-gray-700 my-3"
       >
