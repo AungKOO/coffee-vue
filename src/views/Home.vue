@@ -151,7 +151,7 @@
     </section>
 
     <!-- Job Opportunities Section -->
-    <div class="container mt-4">
+    <div class="mt-4">
       <!-- <h2 class="text-4xl font-bold text-coffee-900 mb-4 text-center">
         Coffee Industry Careers
       </h2>
