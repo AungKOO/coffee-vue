@@ -151,7 +151,7 @@
     </section>
 
     <!-- Job Opportunities Section -->
-    <section ref="jobSectionRef" class="mt-4 lazy-section">
+    <div class="mt-4">
       <!-- <h2 class="text-4xl font-bold text-coffee-900 mb-4 text-center">
         Coffee Industry Careers
       </h2>
@@ -162,21 +162,11 @@
       <!-- Responsive iframe container -->
 
       <iframe
-        v-if="showJobsIframe"
         src="https://preprod.yomarecruit.com/jobs/embedded?brandColor=f01f31&company=Yoma Bank Limited"
         class="w-full min-h-[900px] lg:min-h-[750px] lg:px-8 sm:px-2 scrollbar-hide"
         title="Job Opportunities"
         loading="lazy"
       />
-      <div
-        v-else
-        class="w-full min-h-[900px] lg:min-h-[750px] lg:px-8 sm:px-2 flex flex-col items-center justify-center bg-gray-100 rounded-xl border border-gray-200 text-center animate-pulse"
-        aria-live="polite"
-        aria-busy="true"
-      >
-        <p class="text-lg font-semibold text-gray-600">Loading job opportunities...</p>
-        <p class="text-sm text-gray-500 mt-2">The list appears as soon as you reach this section.</p>
-      </div>
       <a
         href="http://preprod.yomarecruit.com/"
         target="_blank"
@@ -189,48 +179,14 @@
           class="h-5 w-auto"
         />
       </a>
-    </section>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import CoffeeCard from "../components/CoffeeCard.vue";
 import { coffees } from "../data/coffees";
-import { ref, onMounted, onBeforeUnmount } from "vue";
 
 // Show first 3 coffees as featured
 const featuredCoffees = coffees.slice(0, 3);
-
-const jobSectionRef = ref<HTMLElement | null>(null);
-const showJobsIframe = ref(false);
-let observer: IntersectionObserver | null = null;
-
-const mountIframe = () => {
-  showJobsIframe.value = true;
-  observer?.disconnect();
-  observer = null;
-};
-
-onMounted(() => {
-  if (showJobsIframe.value) return;
-
-  if ("IntersectionObserver" in window && jobSectionRef.value) {
-    observer = new IntersectionObserver(
-      (entries) => {
-        if (entries.some((entry) => entry.isIntersecting)) {
-          mountIframe();
-        }
-      },
-      { rootMargin: "200px 0px" }
-    );
-    observer.observe(jobSectionRef.value);
-  } else {
-    mountIframe();
-  }
-});
-
-onBeforeUnmount(() => {
-  observer?.disconnect();
-  observer = null;
-});
 </script>
