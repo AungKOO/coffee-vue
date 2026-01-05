@@ -166,6 +166,7 @@
         class="w-full min-h-[900px] lg:min-h-[750px] lg:px-8 sm:px-2 scrollbar-hide"
         title="Job Opportunities"
         loading="lazy"
+        style="-webkit-overflow-scrolling: touch"
       />
       <a
         href="http://preprod.yomarecruit.com/"
