@@ -162,14 +162,14 @@
       <!-- Responsive iframe container -->
 
       <iframe
-        src="https://preprod.yomarecruit.com/jobs/embedded?brandColor=f01f31&company=Yoma Bank Limited"
+        src="https://uat.yomarecruit.com/jobs/embedded?brandColor=f01f31"
         class="w-full min-h-[900px] lg:min-h-[750px] lg:px-8 sm:px-2 scrollbar-hide"
         title="Job Opportunities"
         loading="lazy"
         style="-webkit-overflow-scrolling: touch"
       />
       <a
-        href="http://preprod.yomarecruit.com/"
+        href="http://uat.yomarecruit.com/"
         target="_blank"
         class="flex cursor-pointer items-baseline justify-center gap-2 font-medium text-gray-700 my-3"
       >
