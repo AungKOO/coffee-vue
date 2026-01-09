@@ -1,3 +1,23 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Fix iframe scroll lag on mobile devices (especially iOS) */
+html, body {
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+  overscroll-behavior: contain;
+}
+
+/* Ensure smooth scrolling in iframes on iOS */
+#app {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Reduce paint complexity on scroll for mobile */
+@media (max-width: 768px) {
+  * {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+  }
+}
