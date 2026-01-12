@@ -154,11 +154,11 @@
     <div class="mt-4">
       <!-- Job Opportunities (mobile: fixed height, desktop: min viewport height) -->
       <iframe
+        id="jobsIframe"
         src="https://uat.yomarecruit.com/jobs/embedded?brandColor=f01f31&company=Atlas"
-        class="w-full h-[800px] md:h-[1000px] lg:min-h-screen px-2"
+        class="w-full min-h-screen lg:px-8 sm:px-2 scrollbar-hide"
         title="Job Opportunities"
         loading="lazy"
-        style="border: 0; overflow: auto"
       />
       <a
         href="https://uat.yomarecruit.com/"
@@ -179,6 +179,13 @@
 <script setup lang="ts">
 import CoffeeCard from "../components/CoffeeCard.vue";
 import { coffees } from "../data/coffees";
+
+window.addEventListener("message", function (event) {
+  if (event.data.type === "resize-iframe") {
+    const iframe = document.getElementById("jobsIframe");
+    iframe.style.height = event.data.height + "px";
+  }
+});
 
 // Show first 3 coffees as featured
 const featuredCoffees = coffees.slice(0, 3);
