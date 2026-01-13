@@ -177,14 +177,24 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted, onUnmounted } from "vue";
 import CoffeeCard from "../components/CoffeeCard.vue";
 import { coffees } from "../data/coffees";
 
-window.addEventListener("message", function (event) {
+const handleIframeResize = (event: MessageEvent) => {
   if (event.data.type === "resize-iframe") {
-    const iframe = document.getElementById("jobsIframe");
+    const iframe = document.getElementById("jobsIframe") as HTMLIFrameElement;
+    if (!iframe) return;
     iframe.style.height = event.data.height + "px";
   }
+};
+
+onMounted(() => {
+  window.addEventListener("message", handleIframeResize);
+});
+
+onUnmounted(() => {
+  window.removeEventListener("message", handleIframeResize);
 });
 
 // Show first 3 coffees as featured
