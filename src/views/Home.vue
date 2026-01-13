@@ -155,7 +155,7 @@
       <!-- Job Opportunities (mobile: fixed height, desktop: min viewport height) -->
       <iframe
         id="jobsIframe"
-        src="https://uat.yomarecruit.com/jobs/embedded?brandColor=f01f31&company=Atlas"
+        src="https://preprod.yomarecruit.com/jobs/embedded?brandColor=f01f31&company=Yoma Bank Limited"
         class="w-full min-h-screen border-0"
         style="transform: translateZ(0); -webkit-overflow-scrolling: touch;"
         title="Job Opportunities"
@@ -163,7 +163,7 @@
         scrolling="auto"
       />
       <a
-        href="https://uat.yomarecruit.com/"
+        href="https://preprod.yomarecruit.com/"
         target="_blank"
         class="flex cursor-pointer items-baseline justify-center gap-2 font-medium text-gray-700 my-3"
       >
