@@ -151,14 +151,16 @@
     </section>
 
     <!-- Job Opportunities Section -->
-    <div class="mt-4">
+    <div class="mt-4 lg:px-8 sm:px-2">
       <!-- Job Opportunities (mobile: fixed height, desktop: min viewport height) -->
       <iframe
         id="jobsIframe"
         src="https://uat.yomarecruit.com/jobs/embedded?brandColor=f01f31&company=Atlas"
-        class="w-full min-h-screen lg:px-8 sm:px-2 scrollbar-hide"
+        class="w-full min-h-screen border-0"
+        style="transform: translateZ(0); -webkit-overflow-scrolling: touch;"
         title="Job Opportunities"
         loading="lazy"
+        scrolling="auto"
       />
       <a
         href="https://uat.yomarecruit.com/"
