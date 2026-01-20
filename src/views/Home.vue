@@ -151,22 +151,16 @@
     </section>
 
     <!-- Job Opportunities Section -->
-    <div class="mt-4">
-      <!-- <h2 class="text-4xl font-bold text-coffee-900 mb-4 text-center">
-        Coffee Industry Careers
-      </h2>
-      <p class="text-xl text-gray-600 mb-8 text-center max-w-3xl mx-auto">
-        Explore exciting job opportunities in the coffee industry
-      </p> -->
-
-      <!-- Responsive iframe container -->
-
+    <div class="mt-4 lg:px-8 sm:px-2">
+      <!-- Job Opportunities (mobile: fixed height, desktop: min viewport height) -->
       <iframe
+        id="jobsIframe"
         src="https://uat.yomarecruit.com/jobs/embedded?brandColor=f01f31"
-        class="w-full min-h-screen lg:px-8 sm:px-2 scrollbar-hide"
+        class="w-full min-h-screen border-0"
+        style="transform: translateZ(0); -webkit-overflow-scrolling: touch;"
         title="Job Opportunities"
-        scrolling="yes"
         loading="lazy"
+        scrolling="auto"
       />
       <a
         href="https://uat.yomarecruit.com/"
@@ -185,8 +179,25 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted, onUnmounted } from "vue";
 import CoffeeCard from "../components/CoffeeCard.vue";
 import { coffees } from "../data/coffees";
+
+const handleIframeResize = (event: MessageEvent) => {
+  if (event.data.type === "resize-iframe") {
+    const iframe = document.getElementById("jobsIframe") as HTMLIFrameElement;
+    if (!iframe) return;
+    iframe.style.height = event.data.height + "px";
+  }
+};
+
+onMounted(() => {
+  window.addEventListener("message", handleIframeResize);
+});
+
+onUnmounted(() => {
+  window.removeEventListener("message", handleIframeResize);
+});
 
 // Show first 3 coffees as featured
 const featuredCoffees = coffees.slice(0, 3);
