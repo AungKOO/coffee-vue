@@ -4,7 +4,7 @@
     <section
       class="relative h-[500px] bg-cover bg-center"
       style="
-        background-image: url('https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=1600&auto=format&fit=crop');
+        background-image: url(&quot;https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=1600&auto=format&fit=crop&quot;);
       "
     >
       <div class="absolute inset-0 bg-black bg-opacity-50"></div>
@@ -155,15 +155,15 @@
       <!-- Job Opportunities (mobile: fixed height, desktop: min viewport height) -->
       <iframe
         id="jobsIframe"
-        src="https://preprod.yomarecruit.com/jobs/embedded?brandColor=f01f31&company=Yoma Bank Limited"
+        src="https://uat.yomarecruit.com/jobs/embedded?brandColor=f01f31&company=Atlas"
         class="w-full min-h-screen border-0"
-        style="transform: translateZ(0); -webkit-overflow-scrolling: touch;"
+        style="transform: translateZ(0); -webkit-overflow-scrolling: touch"
         title="Job Opportunities"
         loading="lazy"
         scrolling="auto"
       />
       <a
-        href="https://preprod.yomarecruit.com/"
+        href="https://uat.yomarecruit.com/"
         target="_blank"
         class="flex cursor-pointer items-baseline justify-center gap-2 font-medium text-gray-700 my-3"
       >
