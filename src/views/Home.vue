@@ -160,20 +160,8 @@
         style="transform: translateZ(0); -webkit-overflow-scrolling: touch"
         title="Job Opportunities"
         loading="lazy"
-        scrolling="auto"
+        scrolling="no"
       />
-      <a
-        href="https://preprod.yomarecruit.com/"
-        target="_blank"
-        class="flex cursor-pointer items-baseline justify-center gap-2 font-medium text-gray-700 my-3"
-      >
-        <p>Built by</p>
-        <img
-          src="/images/yoma-recruit-horizontal.svg"
-          alt="YJP logo"
-          class="h-5 w-auto"
-        />
-      </a>
     </div>
   </div>
 </template>
