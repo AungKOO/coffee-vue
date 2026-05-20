@@ -151,44 +151,212 @@
     </section>
 
     <!-- Job Opportunities Section -->
-    <div class="mt-4 lg:px-8 sm:px-2">
-      <!-- Job Opportunities (mobile: fixed height, desktop: min viewport height) -->
+    <!-- Job Opportunities (mobile: fixed height, desktop: min viewport height) -->
+    <!-- height="600" is a safe fallback before the first resize message arrives -->
+    <!-- scrolling removed (deprecated) — overflow:hidden handles it via CSS -->
+    <div class="mx-4 py-4 sm:mx-2">
       <iframe
-        id="jobsIframe"
+        id="job-listing-iframe"
+        ref="jobsIframeRef"
         src="https://uat.yomarecruit.com/jobs/embedded?brandColor=ED1B34&fontFamily=Rubik"
-        style="
-          transform: translateZ(0);
-          -webkit-overflow-scrolling: touch;
-          width: 100%;
-          border: none;
-        "
+        width="100%"
+        :style="{
+          transform: 'translateZ(0)',
+          WebkitOverflowScrolling: 'touch',
+          width: '100%',
+          border: 'none',
+          display: 'block',
+          overflow: 'hidden',
+          minHeight: `${minIframeHeight}px`,
+          height: `${iframeHeight}px`,
+        }"
         title="Job Opportunities"
         loading="lazy"
-        scrolling="auto"
       />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted } from "vue";
+import { onMounted, onUnmounted, ref } from "vue";
 import CoffeeCard from "../components/CoffeeCard.vue";
 import { coffees } from "../data/coffees";
 
-const handleIframeResize = (event: MessageEvent) => {
-  if (event.data.type === "resize-iframe") {
-    const iframe = document.getElementById("jobsIframe") as HTMLIFrameElement;
-    if (!iframe) return;
-    iframe.style.height = event.data.height + "px";
+type IframeMessage = {
+  type?: string;
+  event?: string;
+  height?: number | string;
+  iframeHeight?: number | string;
+  payload?: unknown;
+  [key: string]: unknown;
+};
+
+const iframeSrc =
+  "https://uat.yomarecruit.com/jobs/embedded?brandColor=ED1B34&fontFamily=Rubik";
+const iframeOrigin = new URL(iframeSrc).origin;
+const jobsIframeRef = ref<HTMLIFrameElement | null>(null);
+const minIframeHeight = ref(600);
+const iframeHeight = ref(600);
+let resizeRequestIntervalId: number | null = null;
+
+const getResponsiveMinHeight = () => {
+  if (window.innerWidth < 640) return 520;
+  if (window.innerWidth < 1024) return 620;
+  return Math.max(700, Math.round(window.innerHeight * 0.8));
+};
+
+const getResponsiveMaxHeight = () => {
+  // Guard against positive feedback loops from child-side height measurement.
+  return Math.max(1400, Math.round(window.innerHeight * 2.2));
+};
+
+const extractMessageHeight = (message: IframeMessage) => {
+  const directHeight = Number(message.height ?? message.iframeHeight);
+  if (Number.isFinite(directHeight)) return directHeight;
+
+  if (message.payload && typeof message.payload === "object") {
+    const payload = message.payload as Record<string, unknown>;
+    const payloadHeight = Number(payload.height ?? payload.iframeHeight);
+    if (Number.isFinite(payloadHeight)) return payloadHeight;
+  }
+
+  return NaN;
+};
+
+const setIframeHeight = (nextHeight: number) => {
+  if (!Number.isFinite(nextHeight)) return;
+  const maxHeight = getResponsiveMaxHeight();
+  const safeHeight = Math.min(
+    maxHeight,
+    Math.max(minIframeHeight.value, Math.floor(nextHeight)),
+  );
+  iframeHeight.value = safeHeight;
+};
+
+const parseMessageData = (data: unknown): IframeMessage | null => {
+  if (typeof data === "string") {
+    try {
+      const parsed = JSON.parse(data) as IframeMessage;
+      return parsed && typeof parsed === "object" ? parsed : null;
+    } catch {
+      return null;
+    }
+  }
+
+  if (data && typeof data === "object") {
+    return data as IframeMessage;
+  }
+
+  return null;
+};
+
+const dispatchIframeEvent = (message: IframeMessage) => {
+  window.dispatchEvent(
+    new CustomEvent("jobs-iframe-message", {
+      detail: message,
+    }),
+  );
+};
+
+const requestIframeResize = (reason: string) => {
+  const iframe = jobsIframeRef.value;
+  if (!iframe || !iframe.contentWindow) return;
+
+  iframe.contentWindow.postMessage(
+    {
+      type: "request-iframe-resize",
+      reason,
+      viewport: {
+        width: window.innerWidth,
+        height: window.innerHeight,
+      },
+    },
+    iframeOrigin,
+  );
+};
+
+const handleIframeMessage = (event: MessageEvent) => {
+  const iframe = jobsIframeRef.value;
+  if (!iframe || !iframe.contentWindow) return;
+
+  // Accept messages only from the embedded iframe window and origin.
+  if (event.source !== iframe.contentWindow) return;
+  if (event.origin !== iframeOrigin) return;
+
+  const message = parseMessageData(event.data);
+  if (!message) return;
+
+  dispatchIframeEvent(message);
+
+  const eventType = message.type ?? message.event;
+
+  switch (eventType) {
+    case "resize-iframe":
+    case "iframe-resize":
+    case "set-iframe-height": {
+      const nextHeight = extractMessageHeight(message);
+      setIframeHeight(nextHeight);
+      break;
+    }
+    case "child-ready":
+    case "iframe-ready": {
+      iframe.contentWindow.postMessage(
+        {
+          type: "parent-ready",
+          viewport: {
+            width: window.innerWidth,
+            height: window.innerHeight,
+          },
+        },
+        iframeOrigin,
+      );
+      requestIframeResize("child-ready");
+      break;
+    }
+    default: {
+      // All iframe events are captured and re-dispatched above,
+      // while unknown event types are safely ignored by the parent.
+      break;
+    }
   }
 };
 
+const handleViewportResize = () => {
+  minIframeHeight.value = getResponsiveMinHeight();
+  if (iframeHeight.value < minIframeHeight.value) {
+    iframeHeight.value = minIframeHeight.value;
+  }
+
+  requestIframeResize("viewport-resize");
+};
+
+const handleIframeLoad = () => {
+  requestIframeResize("iframe-load");
+};
+
 onMounted(() => {
-  window.addEventListener("message", handleIframeResize);
+  minIframeHeight.value = getResponsiveMinHeight();
+  iframeHeight.value = minIframeHeight.value;
+
+  jobsIframeRef.value?.addEventListener("load", handleIframeLoad);
+  window.addEventListener("message", handleIframeMessage);
+  window.addEventListener("resize", handleViewportResize);
+
+  // Safety net: ask the child to re-measure periodically so shrink events are not missed.
+  resizeRequestIntervalId = window.setInterval(() => {
+    requestIframeResize("interval-sync");
+  }, 1500);
 });
 
 onUnmounted(() => {
-  window.removeEventListener("message", handleIframeResize);
+  jobsIframeRef.value?.removeEventListener("load", handleIframeLoad);
+  window.removeEventListener("message", handleIframeMessage);
+  window.removeEventListener("resize", handleViewportResize);
+
+  if (resizeRequestIntervalId !== null) {
+    window.clearInterval(resizeRequestIntervalId);
+    resizeRequestIntervalId = null;
+  }
 });
 
 // Show first 3 coffees as featured
