@@ -155,12 +155,16 @@
       <!-- Job Opportunities (mobile: fixed height, desktop: min viewport height) -->
       <iframe
         id="jobsIframe"
-        src="https://preprod.yomarecruit.com/jobs/embedded?brandColor=ED1B34&company=Yoma+Bank+Limited&fontFamily=Rubik"
-        class="w-full min-h-screen border-0"
-        style="transform: translateZ(0); -webkit-overflow-scrolling: touch"
+        src="https://uat.yomarecruit.com/jobs/embedded?brandColor=ED1B34&fontFamily=Rubik"
+        style="
+          transform: translateZ(0);
+          -webkit-overflow-scrolling: touch;
+          width: 100%;
+          border: none;
+        "
         title="Job Opportunities"
         loading="lazy"
-        scrolling="no"
+        scrolling="auto"
       />
     </div>
   </div>
